@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="zh" xml:lang="zh">
+<head>
+<title>D-Bus初探——控制你的播放器</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2011-03-19 22:46:03 CST"/>
+<meta name="author" content="Tiger Soldier"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<!-- configuration parameters --> <meta name='duration' content='5' /> <meta name='font-size-adjustment' content='2' /> <!-- style sheet links --> <link rel='stylesheet' href='slidy.css' type='text/css' /> <link rel='stylesheet' href='w3c-blue.css' type='text/css' /> <link rel='stylesheet' href='org-src.css' type='text/css' /> <!-- HTMTLSLIDY JS --> <script src='htmlslidy-slides.js' type='text/javascript'></script> <script src='slidy.js' type='text/javascript'></script> <script src='jquery.js' type='text/javascript'></script> <script src='org-slidy-slides.js' type='text/javascript'></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+<div id="content">
+
+<div class='slide cover title'><h1>D-Bus初探——控制你的播放器</h1><h3>Tiger Soldier</h3>&lt;tigersoldi@gmail.com&gt;</div>
+
+<div class="background"> 
+  <img id="head-icon" alt="graphic with four colored squares"
+    src="images/icon-blue.png" /> 
+</div> 
+
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1">大纲 </h2>
+<div class="outline-text-2" id="text-1">
+
+<ul>
+<li><b>D-Bus简介</b>
+</li>
+<li>初探——控制播放器
+</li>
+<li>再探——实现服务
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2">D-Bus是？ </h2>
+<div class="outline-text-2" id="text-2">
+
+<p>  一种进程间通信(IPC)机制
+</p></div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3">为什么用D-Bus </h2>
+<div class="outline-text-2" id="text-3">
+
+<ul>
+<li>简化IPC开发
+</li>
+<li>开放标准
+</li>
+<li>广泛支持
+</li>
+<li>多语言绑定
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4">D-Bus的特点 </h2>
+<div class="outline-text-2" id="text-4">
+
+<ul>
+<li>基于总线连接
+</li>
+<li>基于消息传递
+</li>
+<li>类面向对象
+</li>
+<li>支持单点传输(方法调用)和广播(信号)
+</li>
+<li>按需启动
+</li>
+<li><i>Introspection</i>
+</li>
+<li><i>权限控制</i>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5">能用D-Bus干些啥？ </h2>
+<div class="outline-text-2" id="text-5">
+
+<ul>
+<li>与其他程序进行通信：OSD Lyrics
+</li>
+<li>在用户级别操作硬件：NetworkManager
+</li>
+<li>作为插件接口：Telepathy
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6">大纲 </h2>
+<div class="outline-text-2" id="text-6">
+
+<ul>
+<li>D-Bus简介
+</li>
+<li><b>初探——控制播放器</b>
+</li>
+<li>再探——实现服务
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7">Bus </h2>
+<div class="outline-text-2" id="text-7">
+
+<ul>
+<li>IPC通过Bus完成，程序连接到Bus，消息由Bus转发
+</li>
+<li>两条Bus
+<ul>
+<li>System Bus
+</li>
+<li>Session Bus
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8">System Bus </h2>
+<div class="outline-text-2" id="text-8">
+
+<p>    提供系统级别的服务，一般用于硬件操作与通知。
+</p>
+
+
+
+<pre class="example">$ qdbus --system
+ com.ubuntu.Upstart
+ org.freedesktop.Avahi
+:1.19
+ org.freedesktop.PolicyKit1
+:1.2
+ org.freedesktop.NetworkManager
+...
+</pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9">Session Bus </h2>
+<div class="outline-text-2" id="text-9">
+
+<p>    会话级别的Bus，每个登录会话各有一个。用于桌面应用。
+</p>
+
+
+
+<pre class="example">$ qdbus 
+ org.gnome.Rhythmbox
+:1.31
+:1.313
+ org.mpris.MediaPlayer2.rhythmbox
+:1.315
+ org.kde.amarok
+:1.318
+...
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10">Python: 连接到Bus </h2>
+<div class="outline-text-2" id="text-10">
+
+
+
+
+
+<pre class="src src-python"><span class="org-keyword">import</span> dbus
+<span class="org-variable-name">bus</span> = dbus.SessionBus()
+<span class="org-comment"># &#20351;&#29992;dbus.SystemBus()&#36830;&#25509;&#21040;&#31995;&#32479;Bus
+</span></pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-11" class="outline-2">
+<h2 id="sec-11">Bus Name </h2>
+<div class="outline-text-2" id="text-11">
+
+<p>  每个连接都有一个唯一标识，即连接的Bus Name
+</p><ul>
+<li>以冒号(:)开头，后接两段以点分开的数字
+</li>
+<li>Bus Name是唯一的，即使连接消失了也不会用在另一个连接上
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-12" class="outline-2">
+<h2 id="sec-12">Well-known name </h2>
+<div class="outline-text-2" id="text-12">
+
+<p>  由于Bus Name是唯一而且无法预期的，服务提供者需要申请Well-known name.
+</p><ul>
+<li>类似域名，以点分隔，每段由英文字母/数字/下划线/减号组成
+</li>
+<li>Well-known name 只是别名，一个Bus连接可以有多个Well-known name
+</li>
+<li>任意程序都可以申请任意合法Well-known name，冲突使用排队机制解决
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-13" class="outline-2">
+<h2 id="sec-13">例子 </h2>
+<div class="outline-text-2" id="text-13">
+
+
+
+
+<pre class="example">$ qdbus 
+ org.gnome.Rhythmbox
+~~~~~~~~~~~~~~~~~~~~ Well-known name
+:1.31
+~~~~~ Bus name
+...
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-14" class="outline-2">
+<h2 id="sec-14">对象 </h2>
+<div class="outline-text-2" id="text-14">
+
+<p>   每个服务可以导出多个对象
+</p><ul>
+<li>网络管理器：每个接口作为一个对象
+</li>
+<li>编辑器：每个文档作为一个对象
+</li>
+<li>播放器：播放控制作为一个对象，每个播放列表作为一个对象
+</li>
+</ul>
+
+<p>
+   对象名称使用类似路径的方式表示
+</p>
+
+
+
+<pre class="example">$ qdbus org.mpris.audacious 
+/
+/Player
+/TrackList
+...
+</pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-15" class="outline-2">
+<h2 id="sec-15">Python: 获取一个对象 </h2>
+<div class="outline-text-2" id="text-15">
+
+<p>    我们可以在Python中指定Bus Name和对象名称，得到一个远端对象在本地的proxy
+</p>
+
+
+
+<pre class="src src-python"><span class="org-keyword">import</span> dbus
+<span class="org-variable-name">service</span> = <span class="org-string">"org.mpris.audacious"</span>
+<span class="org-variable-name">object_path</span> = <span class="org-string">"/Player"</span>
+
+<span class="org-keyword">if</span> <span class="org-builtin">__name__</span> == <span class="org-string">'__main__'</span>:
+    bus = dbus.SessionBus()
+    <span class="org-keyword">try</span>:
+        proxy = bus.get_object(service, object_path);
+    <span class="org-keyword">except</span> dbus.DBusException:
+        <span class="org-keyword">print</span> <span class="org-string">"Can not connect to service"</span>
+        <span class="org-builtin">exit</span>(1)
+</pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-16" class="outline-2">
+<h2 id="sec-16">方法调用 </h2>
+<div class="outline-text-2" id="text-16">
+
+<p>   方法调用是在对象的基础上进行的。不同对象有不同方法。
+</p>
+
+
+
+<pre class="example">$ qdbus org.mpris.audacious /Player Next
+</pre>
+
+
+
+<p>
+    在Python中，直接对对象的proxy调用相应的方法即可
+</p>
+
+
+
+<pre class="src src-python">proxy.Next()
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-17" class="outline-2">
+<h2 id="sec-17">参数类型 </h2>
+<div class="outline-text-2" id="text-17">
+
+<p>  D-Bus方法调用支持传入和返回参数。
+</p><ul>
+<li>参数类型使用字符串描述，称为参数的签名
+</li>
+<li>原子类型使用单个字符表示，例如INT32的签名为"i"
+</li>
+<li>多个参数按顺序并排，例如"ii"表示传入两个INT32
+</li>
+<li>支持多个传出参数(返回值)
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-18" class="outline-2">
+<h2 id="sec-18">原子类型 </h2>
+<div class="outline-text-2" id="text-18">
+
+<table>
+<caption></caption>
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">类型</th><th scope="col" class="left">签名</th><th scope="col" class="left">备注</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">BYTE</td><td class="left">y</td><td class="left"></td></tr>
+<tr><td class="left">BOOLEAN</td><td class="left">b</td><td class="left">有效值为0(FALSE)和1(TRUE)</td></tr>
+<tr><td class="left">INT16</td><td class="left">n</td><td class="left"></td></tr>
+<tr><td class="left">UINT16</td><td class="left">q</td><td class="left"></td></tr>
+<tr><td class="left">INT32</td><td class="left">i</td><td class="left"></td></tr>
+<tr><td class="left">UINT32</td><td class="left">u</td><td class="left"></td></tr>
+<tr><td class="left">INT64</td><td class="left">x</td><td class="left"></td></tr>
+<tr><td class="left">UINT64</td><td class="left">t</td><td class="left"></td></tr>
+<tr><td class="left">DOUBLE</td><td class="left">d</td><td class="left"></td></tr>
+<tr><td class="left">STRING</td><td class="left">s</td><td class="left">UTF-8编码</td></tr>
+<tr><td class="left">VARIANT</td><td class="left">v</td><td class="left">万能类型，可以容纳任何类型，一般用于类型可变的组合类型</td></tr>
+<tr><td class="left">OBJECT_PATH</td><td class="left">o</td><td class="left">对象的路径，用于传递对象</td></tr>
+<tr><td class="left">SIGNATURE</td><td class="left">g</td><td class="left">类型签名</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-19" class="outline-2">
+<h2 id="sec-19">复合类型 </h2>
+<div class="outline-text-2" id="text-19">
+
+<ul>
+<li>结构体(STRUCT)
+<ul>
+<li>"(iii)"表示一个参数，内含三个INT32
+</li>
+<li>"iii"表示3个INT32参数
+</li>
+</ul>
+</li>
+<li>数组(ARRAY)
+<ul>
+<li>"aii":一个INT32数组加上另一个单独的INT32
+</li>
+<li>"a(ii)":为两个INT32组成的结构体的数组
+</li>
+<li>"aai":二维数组
+</li>
+</ul>
+</li>
+<li>字典(DICT)
+<ul>
+<li>"a{si}": key为STRING，value为INT32的字典
+</li>
+<li>"a{(ss)a(sai)}"
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-20" class="outline-2">
+<h2 id="sec-20">Python: 使用参数与返回值 </h2>
+<div class="outline-text-2" id="text-20">
+
+<p>    对python函数参数和返回值的使用完全相同。参数会自动转换为签名所对应的类型，返回值会自动转换为对应的Python类型。
+</p>
+<p>
+    例如，GetMetadata方法返回值签名为"a{sv}"
+</p>
+
+
+
+<pre class="src src-python"><span class="org-variable-name">metadata</span> = proxy.GetMetadata()
+<span class="org-keyword">for</span> k, v <span class="org-keyword">in</span> metadata.items():
+    <span class="org-keyword">print</span> <span class="org-string">"%s: %s"</span> % (k, v)
+<span class="org-comment"># album: &#21021;&#38899;&#12511;&#12463;&#12505;&#12473;&#12488; &#65374;memories&#65374;
+# artist: supercell feat. &#21021;&#38899;&#12511;&#12463;
+# title: &#12527;&#12540;&#12523;&#12489;&#12452;&#12474;&#12510;&#12452;&#12531;
+# ...
+</span></pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-21" class="outline-2">
+<h2 id="sec-21">参数类型转换 </h2>
+<div class="outline-text-2" id="text-21">
+
+<ul>
+<li>各种UINT、INT，以及BYTE都等价于 <code>int</code> 类型
+</li>
+<li>BOOLEAN可以是任意对象(使用 <code>bool()</code> 转换)
+</li>
+<li>BYTE还可以是一个字符(使用 <code>ord()</code> 转换)
+</li>
+<li>ARRAY对应为 <code>list</code> (<code>dbus.Array</code>)
+</li>
+<li>STRUCT对应为 <code>tuple</code> (<code>dbus.Struct</code>)
+</li>
+<li>DICT对应 <code>dict</code> (<code>dbus.Dictionary</code>)
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-22" class="outline-2">
+<h2 id="sec-22">接口 </h2>
+<div class="outline-text-2" id="text-22">
+
+<p>   每个方法属于一个接口，一个对象可以实现多个接口，接口主要有以下用途
+</p><ul>
+<li>标明支持的标准，实现相应规范
+</li>
+<li>为同名方法提供命名空间
+</li>
+</ul>
+
+<p>   
+   接口与Well-known names一样，使用类似域名的命名方法
+</p>
+
+
+<pre class="example">$ qdbus org.mpris.audacious /Player 
+method QString org.freedesktop.DBus.Introspectable.Introspect()
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~
+                          接口                        方法名
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-23" class="outline-2">
+<h2 id="sec-23">Python: 指定接口 </h2>
+<div class="outline-text-2" id="text-23">
+
+<p>  指定接口主要是为了防止不同接口接口具有同名方法。
+</p>
+<p>
+  在Python中指定接口有两种方法：
+</p><ul>
+<li>调用时指定 <code>dbus_interface</code> 参数
+
+
+
+
+<pre class="src src-python"><span class="org-variable-name">interface</span> = <span class="org-string">"org.freedesktop.MediaPlayer"</span>
+<span class="org-variable-name">metadata</span> = iface.GetMetadata(dbus_interface=interface)
+</pre>
+
+
+
+</li>
+<li>使用dbus.Interface对proxy进行包装
+
+
+
+<pre class="src src-python"><span class="org-variable-name">interface</span> = <span class="org-string">"org.freedesktop.MediaPlayer"</span>
+<span class="org-variable-name">iface</span> = dbus.Interface(proxy, dbus_interface=interface)
+<span class="org-variable-name">metadata</span> = iface.GetMetadata()
+</pre>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-24" class="outline-2">
+<h2 id="sec-24">控制播放器: MPRIS </h2>
+<div class="outline-text-2" id="text-24">
+
+<p>  Media Player Remote Interfaceing Specification
+</p><ul>
+<li>服务以"org.mpris."作为前缀命名
+</li>
+<li>导出"/"、"/Player"、"TrackList"三个对象
+</li>
+<li>使用"org.freedesktop.MediaPlayer"接口
+</li>
+<li>一系列标准函数：Play、Pause、Stop、Next、Prev……
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-25" class="outline-2">
+<h2 id="sec-25">异步调用 </h2>
+<div class="outline-text-2" id="text-25">
+
+<p>  D-Bus的方法调用本身是异步的。要实现异步调用，需要两个条件
+</p><ul>
+<li>使用消息循环
+</li>
+<li>为方法调用加入异步回调函数
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-26" class="outline-2">
+<h2 id="sec-26">消息循环 </h2>
+<div class="outline-text-2" id="text-26">
+
+<p>    dbus-python支持基于glib的消息循环。可以为所有连接指定全局消息循环，也可以为每个连接单独指定消息循环。
+</p>
+<p>
+    首先需要导入消息循环：
+</p>
+
+
+<pre class="src src-python"><span class="org-keyword">from</span> dbus.mainloop.glib <span class="org-keyword">import</span> DBusGMainLoop
+<span class="org-keyword">import</span> glib
+<span class="org-variable-name">loop</span> = glib.MainLoop()
+</pre>
+
+
+
+<p>
+指定全局消息循环：
+</p>
+
+
+<pre class="src src-python"><span class="org-variable-name">mainloop</span> = DBusGMainLoop(set_as_default=<span class="org-keyword">True</span>)
+<span class="org-variable-name">bus</span> = dbus.SessionBus()
+</pre>
+
+
+
+<p>
+单独指定消息循环：
+</p>
+
+
+<pre class="src src-python"><span class="org-variable-name">mainloop</span> = DBusGMainLoop()
+<span class="org-variable-name">session</span> = dbus.SessionBus(mainloop=mainloop)
+</pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-27" class="outline-2">
+<h2 id="sec-27">异步操作 </h2>
+<div class="outline-text-2" id="text-27">
+
+<ul>
+<li>在方法调用时提供 <code>reply_handler</code> 和 <code>error_handler</code> 两个回调函数
+</li>
+<li>返回值在 <code>reply_handler</code> 里提供
+
+
+
+
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">reply_cb</span>(metadata):
+    <span class="org-keyword">print</span> <span class="org-string">"Got Metadata"</span>
+    <span class="org-keyword">for</span> k, v <span class="org-keyword">in</span> metadata.items():
+        <span class="org-keyword">print</span> <span class="org-string">"%s: %s"</span> % (k, v)
+    loop.quit()
+
+<span class="org-keyword">def</span> <span class="org-function-name">error_cb</span>(e):
+    <span class="org-keyword">print</span> <span class="org-string">"Async call failed"</span>
+    loop.quit()
+
+iface.GetMetadata(reply_handler=reply_cb,
+                  error_handler=error_cb)
+</pre>
+
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-28" class="outline-2">
+<h2 id="sec-28">信号 </h2>
+<div class="outline-text-2" id="text-28">
+
+<ul>
+<li>由服务提供者发送
+</li>
+<li>信号属于接口
+</li>
+<li>信号可以带有参数
+</li>
+<li>使用信号需要建立消息循环
+
+
+
+
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">track_change_cb</span>(track, sender=<span class="org-constant">None</span>):
+    <span class="org-keyword">print</span> <span class="org-string">"Track changed: %s"</span> % track[<span class="org-string">'title'</span>]
+    <span class="org-keyword">print</span> <span class="org-string">"Sender is: %s"</span> % sender
+iface.connect_to_signal(<span class="org-string">"TrackChange"</span>,
+                        track_change_cb,
+                        sender_keyword=<span class="org-string">"sender"</span>)
+</pre>
+
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-29" class="outline-2">
+<h2 id="sec-29">大纲 </h2>
+<div class="outline-text-2" id="text-29">
+
+<ul>
+<li>D-Bus简介
+</li>
+<li>初探——控制播放器
+</li>
+<li><b>再探——实现服务</b>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-30" class="outline-2">
+<h2 id="sec-30">获取well-known name </h2>
+<div class="outline-text-2" id="text-30">
+
+
+
+
+<pre class="src src-python"><span class="org-keyword">import</span> dbus.service
+<span class="org-variable-name">BUS_NAME</span> = <span class="org-string">'org.mpris.demo'</span>
+<span class="org-variable-name">bus</span> = dbus.SessionBus()
+<span class="org-variable-name">bus_name</span> = dbus.service.BusName(bus_name, bus)
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-31" class="outline-2">
+<h2 id="sec-31">创建D-Bus对象 </h2>
+<div class="outline-text-2" id="text-31">
+
+<ul>
+<li>继承dbus.service.Object对象
+</li>
+<li>初始化函数中 <code>bus_name</code> 和 <code>conn</code> 至少指定一项
+</li>
+<li><code>bus_name</code> 为获取的well-known name对象
+</li>
+<li><code>conn</code> 为 <code>dbus.SessionBus()</code> 或者 <code>dbus.SystemBus()</code> 所得到的连接对象
+
+
+
+
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">MprisPlayer</span>(dbus.service.Object):
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, bus_name):
+        dbus.service.Object.__init__(<span class="org-keyword">self</span>,
+                                     bus_name=bus_name,
+                                     object_path=<span class="org-string">'/Player'</span>)
+<span class="org-comment">#...
+</span><span class="org-variable-name">player_obj</span> = MprisPlayer(<span class="org-keyword">self</span>._bus_name)
+</pre>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-32" class="outline-2">
+<h2 id="sec-32">创建方法 </h2>
+<div class="outline-text-2" id="text-32">
+
+<p>   使用dbus.service.method修饰类的方法即可
+</p>
+
+
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">MprisPlayer</span>(dbus.service.Object):
+<span class="org-comment">#...
+</span>    <span class="org-type">@dbus</span>.service.method(dbus_interface=MPRIS_IFACE,
+                         in_signature=<span class="org-string">''</span>,
+                         out_signature=<span class="org-string">'a{sv}'</span>)
+    <span class="org-keyword">def</span> <span class="org-function-name">GetMetadata</span>(<span class="org-keyword">self</span>):
+        <span class="org-keyword">return</span> [<span class="org-string">'title'</span>: <span class="org-string">'demo'</span>]
+<span class="org-comment">#...
+</span></pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-33" class="outline-2">
+<h2 id="sec-33">创建信号 </h2>
+<div class="outline-text-2" id="text-33">
+
+<ul>
+<li>使用dbus.service.signal修饰类的方法
+</li>
+<li>消息的参数就是方法的传入参数
+</li>
+<li>调用方法即触发信号
+
+
+
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">MprisPlayer</span>(dbus.service.Object):
+<span class="org-comment">#...
+</span>    <span class="org-type">@dbus</span>.service.signal(dbus_interface=MPRIS_IFACE,
+                         signature=<span class="org-string">'a{sv}'</span>)
+    <span class="org-keyword">def</span> <span class="org-function-name">TrackChange</span>(<span class="org-keyword">self</span>, track):
+        <span class="org-keyword">pass</span>
+<span class="org-comment">#...
+</span>player_obj.TrackChange([<span class="org-string">'title'</span>: <span class="org-string">'demo'</span>])
+</pre>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-34" class="outline-2">
+<h2 id="sec-34">按需启动 </h2>
+<div class="outline-text-2" id="text-34">
+
+<ul>
+<li>只有在需要的时候，才启动服务
+</li>
+<li>客户端无需考虑服务是否已经启动
+
+<p>
+    创建以.service为后缀的文件，置于/usr/share/dbus-1/services目录下(系统服务为system-services目录)，内容如下：
+</p>
+
+
+<pre class="src src-xml">[D-BUS Service]
+Name=well.known.name1;well.known.name2
+Exec=/path/to/program
+</pre>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-35" class="outline-2">
+<h2 id="sec-35">FAQ </h2>
+<div class="outline-text-2" id="text-35">
+
+<p>  相关资源：
+</p><ul>
+<li><a href="http://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus Specification</a>
+</li>
+<li><a href="http://www.freedesktop.org/wiki/IntroductionToDBus">IntroductionToDBus</a>
+</li>
+<li><a href="http://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html">dbus-python tutorial</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="postamble">
+</div>
+</div>
+</body>
+</html>

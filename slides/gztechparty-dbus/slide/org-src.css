@@ -1,0 +1,21 @@
+.org-keyword {
+    color: #9933FF;
+    font-weight: bold;
+}
+
+.org-variable-name {
+    color: #FF6633;
+}
+
+.org-string {
+    color: #0099FF;
+}
+
+.org-builtin {
+    color: #FF6666;
+}
+
+.org-comment {
+    color: #999999;
+    font-style: italic;
+}

@@ -1,0 +1,366 @@
+#+TITLE:     D-Bus初探——控制你的播放器
+#+AUTHOR:    Tiger Soldier
+#+EMAIL:     tigersoldi@gmail.com
+#+SETUPFILE: htmlslidy.org
+
+#+BEGIN_HTML
+<div class="background"> 
+  <img id="head-icon" alt="graphic with four colored squares"
+    src="images/icon-blue.png" /> 
+</div> 
+#+END_HTML
+
+* 大纲
+  - *D-Bus简介*
+  - 初探——控制播放器
+  - 再探——实现服务
+* D-Bus是？
+  一种进程间通信(IPC)机制
+* 为什么用D-Bus
+  - 简化IPC开发
+  - 开放标准
+  - 广泛支持
+  - 多语言绑定
+* D-Bus的特点
+  - 基于总线连接
+  - 基于消息传递
+  - 类面向对象
+  - 支持单点传输(方法调用)和广播(信号)
+  - 按需启动
+  - /Introspection/
+  - /权限控制/
+* 能用D-Bus干些啥？
+  - 与其他程序进行通信：OSD Lyrics
+  - 在用户级别操作硬件：NetworkManager
+  - 作为插件接口：Telepathy
+* 大纲
+  - D-Bus简介
+  - *初探——控制播放器*
+  - 再探——实现服务
+* Bus
+  - IPC通过Bus完成，程序连接到Bus，消息由Bus转发
+  - 两条Bus
+    - System Bus
+    - Session Bus
+
+* System Bus
+    提供系统级别的服务，一般用于硬件操作与通知。
+
+#+BEGIN_EXAMPLE
+$ qdbus --system
+ com.ubuntu.Upstart
+ org.freedesktop.Avahi
+:1.19
+ org.freedesktop.PolicyKit1
+:1.2
+ org.freedesktop.NetworkManager
+...
+#+END_EXAMPLE
+
+* Session Bus
+    会话级别的Bus，每个登录会话各有一个。用于桌面应用。
+
+#+BEGIN_EXAMPLE
+$ qdbus 
+ org.gnome.Rhythmbox
+:1.31
+:1.313
+ org.mpris.MediaPlayer2.rhythmbox
+:1.315
+ org.kde.amarok
+:1.318
+...
+#+END_EXAMPLE
+* Python: 连接到Bus
+
+#+BEGIN_SRC python
+import dbus
+bus = dbus.SessionBus()
+# 使用dbus.SystemBus()连接到系统Bus
+#+END_SRC
+
+* Bus Name
+  每个连接都有一个唯一标识，即连接的Bus Name
+  - 以冒号(:)开头，后接两段以点分开的数字
+  - Bus Name是唯一的，即使连接消失了也不会用在另一个连接上
+
+* Well-known name
+  由于Bus Name是唯一而且无法预期的，服务提供者需要申请Well-known name.
+  - 类似域名，以点分隔，每段由英文字母/数字/下划线/减号组成
+  - Well-known name 只是别名，一个Bus连接可以有多个Well-known name
+  - 任意程序都可以申请任意合法Well-known name，冲突使用排队机制解决
+
+* 例子
+#+BEGIN_EXAMPLE
+$ qdbus 
+ org.gnome.Rhythmbox
+~~~~~~~~~~~~~~~~~~~~ Well-known name
+:1.31
+~~~~~ Bus name
+...
+#+END_EXAMPLE
+* 对象
+   每个服务可以导出多个对象
+   - 网络管理器：每个接口作为一个对象
+   - 编辑器：每个文档作为一个对象
+   - 播放器：播放控制作为一个对象，每个播放列表作为一个对象
+
+   对象名称使用类似路径的方式表示
+
+#+BEGIN_EXAMPLE
+$ qdbus org.mpris.audacious 
+/
+/Player
+/TrackList
+...
+#+END_EXAMPLE
+
+* Python: 获取一个对象
+    我们可以在Python中指定Bus Name和对象名称，得到一个远端对象在本地的proxy
+
+#+BEGIN_SRC python
+  import dbus
+  service = "org.mpris.audacious"
+  object_path = "/Player"
+  
+  if __name__ == '__main__':
+      bus = dbus.SessionBus()
+      try:
+          proxy = bus.get_object(service, object_path);
+      except dbus.DBusException:
+          print "Can not connect to service"
+          exit(1)
+#+END_SRC
+
+* 方法调用
+   方法调用是在对象的基础上进行的。不同对象有不同方法。
+
+#+BEGIN_EXAMPLE
+$ qdbus org.mpris.audacious /Player Next
+#+END_EXAMPLE
+
+    在Python中，直接对对象的proxy调用相应的方法即可
+
+#+BEGIN_SRC python
+proxy.Next()
+#+END_SRC
+* 参数类型
+  D-Bus方法调用支持传入和返回参数。
+  - 参数类型使用字符串描述，称为参数的签名
+  - 原子类型使用单个字符表示，例如INT32的签名为"i"
+  - 多个参数按顺序并排，例如"ii"表示传入两个INT32
+  - 支持多个传出参数(返回值)
+* 原子类型
+| 类型         | 签名 | 备注                                                   |
+|--------------+------+--------------------------------------------------------|
+| BYTE         | y    |                                                        |
+| BOOLEAN      | b    | 有效值为0(FALSE)和1(TRUE)                              |
+| INT16        | n    |                                                        |
+| UINT16       | q    |                                                        |
+| INT32        | i    |                                                        |
+| UINT32       | u    |                                                        |
+| INT64        | x    |                                                        |
+| UINT64       | t    |                                                        |
+| DOUBLE       | d    |                                                        |
+| STRING       | s    | UTF-8编码                                              |
+| VARIANT      | v    | 万能类型，可以容纳任何类型，一般用于类型可变的组合类型 |
+| OBJECT\_PATH | o    | 对象的路径，用于传递对象                               |
+| SIGNATURE    | g    | 类型签名                                               |
+
+* 复合类型
+  - 结构体(STRUCT)
+    + "(iii)"表示一个参数，内含三个INT32
+    + "iii"表示3个INT32参数
+  - 数组(ARRAY)
+    + "aii":一个INT32数组加上另一个单独的INT32
+    + "a(ii)":为两个INT32组成的结构体的数组
+    + "aai":二维数组
+  - 字典(DICT)
+    + "a{si}": key为STRING，value为INT32的字典
+    + "a{(ss)a(sai)}"
+
+
+* Python: 使用参数与返回值
+    对python函数参数和返回值的使用完全相同。参数会自动转换为签名所对应的类型，返回值会自动转换为对应的Python类型。
+
+    例如，GetMetadata方法返回值签名为"a{sv}"
+
+#+BEGIN_SRC python
+metadata = proxy.GetMetadata()
+for k, v in metadata.items():
+    print "%s: %s" % (k, v)
+# album: 初音ミクベスト ～memories～
+# artist: supercell feat. 初音ミク
+# title: ワールドイズマイン
+# ...
+#+END_SRC
+* 参数类型转换
+    - 各种UINT、INT，以及BYTE都等价于 =int= 类型
+    - BOOLEAN可以是任意对象(使用 =bool()= 转换)
+    - BYTE还可以是一个字符(使用 =ord()= 转换)
+    - ARRAY对应为 =list= (=dbus.Array=)
+    - STRUCT对应为 =tuple= (=dbus.Struct=)
+    - DICT对应 =dict= (=dbus.Dictionary=)
+
+* 接口
+   每个方法属于一个接口，一个对象可以实现多个接口，接口主要有以下用途
+   - 标明支持的标准，实现相应规范
+   - 为同名方法提供命名空间
+   
+   接口与Well-known names一样，使用类似域名的命名方法
+#+BEGIN_EXAMPLE
+$ qdbus org.mpris.audacious /Player 
+method QString org.freedesktop.DBus.Introspectable.Introspect()
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~
+                          接口                        方法名
+#+END_EXAMPLE
+* Python: 指定接口
+  指定接口主要是为了防止不同接口接口具有同名方法。
+
+  在Python中指定接口有两种方法：
+    - 调用时指定 =dbus_interface= 参数
+
+#+BEGIN_SRC python
+interface = "org.freedesktop.MediaPlayer"
+metadata = iface.GetMetadata(dbus_interface=interface)
+#+END_SRC
+
+    - 使用dbus.Interface对proxy进行包装
+#+BEGIN_SRC python
+interface = "org.freedesktop.MediaPlayer"
+iface = dbus.Interface(proxy, dbus_interface=interface)
+metadata = iface.GetMetadata()
+#+END_SRC
+* 控制播放器: MPRIS
+  Media Player Remote Interfaceing Specification
+  - 服务以"org.mpris."作为前缀命名
+  - 导出"/"、"/Player"、"TrackList"三个对象
+  - 使用"org.freedesktop.MediaPlayer"接口
+  - 一系列标准函数：Play、Pause、Stop、Next、Prev……
+* 异步调用
+  D-Bus的方法调用本身是异步的。要实现异步调用，需要两个条件
+  - 使用消息循环
+  - 为方法调用加入异步回调函数
+* 消息循环
+    dbus-python支持基于glib的消息循环。可以为所有连接指定全局消息循环，也可以为每个连接单独指定消息循环。
+
+    首先需要导入消息循环：
+#+BEGIN_SRC python
+from dbus.mainloop.glib import DBusGMainLoop
+import glib
+loop = glib.MainLoop()
+#+END_SRC
+
+指定全局消息循环：
+#+BEGIN_SRC python
+mainloop = DBusGMainLoop(set_as_default=True)
+bus = dbus.SessionBus()
+#+END_SRC
+
+单独指定消息循环：
+#+BEGIN_SRC python
+mainloop = DBusGMainLoop()
+session = dbus.SessionBus(mainloop=mainloop)
+#+END_SRC
+
+* 异步操作
+    - 在方法调用时提供 =reply_handler= 和 =error_handler= 两个回调函数
+    - 返回值在 =reply_handler= 里提供
+
+#+BEGIN_SRC python
+def reply_cb(metadata):
+    print "Got Metadata"
+    for k, v in metadata.items():
+        print "%s: %s" % (k, v)
+    loop.quit()
+
+def error_cb(e):
+    print "Async call failed"
+    loop.quit()
+
+iface.GetMetadata(reply_handler=reply_cb,
+                  error_handler=error_cb)
+#+END_SRC
+
+* 信号
+   - 由服务提供者发送
+   - 信号属于接口
+   - 信号可以带有参数
+   - 使用信号需要建立消息循环
+
+#+BEGIN_SRC python
+def track_change_cb(track, sender=None):
+    print "Track changed: %s" % track['title']
+    print "Sender is: %s" % sender
+iface.connect_to_signal("TrackChange",
+                        track_change_cb,
+                        sender_keyword="sender")
+#+END_SRC
+
+* 大纲
+  - D-Bus简介
+  - 初探——控制播放器
+  - *再探——实现服务*
+* 获取well-known name
+#+BEGIN_SRC python
+import dbus.service
+BUS_NAME = 'org.mpris.demo'
+bus = dbus.SessionBus()
+bus_name = dbus.service.BusName(bus_name, bus)
+#+END_SRC
+* 创建D-Bus对象
+   - 继承dbus.service.Object对象
+   - 初始化函数中 =bus_name= 和 =conn= 至少指定一项
+   - =bus_name= 为获取的well-known name对象
+   - =conn= 为 =dbus.SessionBus()= 或者 =dbus.SystemBus()= 所得到的连接对象
+
+#+BEGIN_SRC python
+class MprisPlayer(dbus.service.Object):
+    def __init__(self, bus_name):
+        dbus.service.Object.__init__(self,
+                                     bus_name=bus_name,
+                                     object_path='/Player')
+#...
+player_obj = MprisPlayer(self._bus_name)
+#+END_SRC
+* 创建方法
+   使用dbus.service.method修饰类的方法即可
+#+BEGIN_SRC python
+class MprisPlayer(dbus.service.Object):
+#...
+    @dbus.service.method(dbus_interface=MPRIS_IFACE,
+                         in_signature='',
+                         out_signature='a{sv}')
+    def GetMetadata(self):
+        return ['title': 'demo']
+#...
+#+END_SRC
+* 创建信号
+   - 使用dbus.service.signal修饰类的方法
+   - 消息的参数就是方法的传入参数
+   - 调用方法即触发信号
+#+BEGIN_SRC python
+class MprisPlayer(dbus.service.Object):
+#...
+    @dbus.service.signal(dbus_interface=MPRIS_IFACE,
+                         signature='a{sv}')
+    def TrackChange(self, track):
+        pass
+#...
+player_obj.TrackChange(['title': 'demo'])
+#+END_SRC
+* 按需启动
+  - 只有在需要的时候，才启动服务
+  - 客户端无需考虑服务是否已经启动
+
+    创建以.service为后缀的文件，置于/usr/share/dbus-1/services目录下(系统服务为system-services目录)，内容如下：
+#+BEGIN_SRC xml
+[D-BUS Service]
+Name=well.known.name1;well.known.name2
+Exec=/path/to/program
+#+END_SRC
+* FAQ
+  相关资源：
+  - [[http://dbus.freedesktop.org/doc/dbus-specification.html][D-Bus Specification]]
+  - [[http://www.freedesktop.org/wiki/IntroductionToDBus][IntroductionToDBus]]
+  - [[http://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html][dbus-python tutorial]]
