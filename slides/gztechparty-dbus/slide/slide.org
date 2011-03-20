@@ -222,7 +222,7 @@ method QString org.freedesktop.DBus.Introspectable.Introspect()
 
 #+BEGIN_SRC python
 interface = "org.freedesktop.MediaPlayer"
-metadata = iface.GetMetadata(dbus_interface=interface)
+metadata = proxy.GetMetadata(dbus_interface=interface)
 #+END_SRC
 
     - 使用dbus.Interface对proxy进行包装
@@ -361,6 +361,7 @@ Exec=/path/to/program
 #+END_SRC
 * FAQ
   相关资源：
+  - [[https://github.com/tigersoldier/public/tree/master/slides/gztechparty-dbus/src][完整示例代码]]
   - [[http://dbus.freedesktop.org/doc/dbus-specification.html][D-Bus Specification]]
   - [[http://www.freedesktop.org/wiki/IntroductionToDBus][IntroductionToDBus]]
   - [[http://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html][dbus-python tutorial]]

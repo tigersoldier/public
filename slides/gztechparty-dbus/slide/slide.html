@@ -7,7 +7,7 @@ lang="zh" xml:lang="zh">
 <title>D-Bus初探——控制你的播放器</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2011-03-19 22:46:03 CST"/>
+<meta name="generated" content="2011-03-20 11:29:59 CST"/>
 <meta name="author" content="Tiger Soldier"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -421,7 +421,7 @@ lang="zh" xml:lang="zh">
 <tr><td class="left">DOUBLE</td><td class="left">d</td><td class="left"></td></tr>
 <tr><td class="left">STRING</td><td class="left">s</td><td class="left">UTF-8编码</td></tr>
 <tr><td class="left">VARIANT</td><td class="left">v</td><td class="left">万能类型，可以容纳任何类型，一般用于类型可变的组合类型</td></tr>
-<tr><td class="left">OBJECT_PATH</td><td class="left">o</td><td class="left">对象的路径，用于传递对象</td></tr>
+<tr><td class="left">OBJECT\_PATH</td><td class="left">o</td><td class="left">对象的路径，用于传递对象</td></tr>
 <tr><td class="left">SIGNATURE</td><td class="left">g</td><td class="left">类型签名</td></tr>
 </tbody>
 </table>
@@ -559,7 +559,7 @@ method QString org.freedesktop.DBus.Introspectable.Introspect()
 
 
 <pre class="src src-python"><span class="org-variable-name">interface</span> = <span class="org-string">"org.freedesktop.MediaPlayer"</span>
-<span class="org-variable-name">metadata</span> = iface.GetMetadata(dbus_interface=interface)
+<span class="org-variable-name">metadata</span> = proxy.GetMetadata(dbus_interface=interface)
 </pre>
 
 
@@ -876,6 +876,8 @@ Exec=/path/to/program
 
 <p>  相关资源：
 </p><ul>
+<li><a href="https://github.com/tigersoldier/public/tree/master/slides/gztechparty-dbus/src">完整示例代码</a>
+</li>
 <li><a href="http://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus Specification</a>
 </li>
 <li><a href="http://www.freedesktop.org/wiki/IntroductionToDBus">IntroductionToDBus</a>
