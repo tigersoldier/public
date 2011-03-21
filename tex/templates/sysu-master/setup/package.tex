@@ -1,0 +1,205 @@
+%=========================================================================%
+%                          引用的宏包和相应的定义
+%\usepackage{overcite}
+%\usepackage[super]{natbib}
+%=========================================================================%
+
+%============================ 中文支持宏包 ==============================%
+\usepackage{CJK,CJKnumb}
+%====================== 图形和超链接支持宏包 ========================%
+% 图形支持宏包 为了使用PDFLaTeX需要作相应判断
+% hyperref
+% 可以在转换为pdf文件时自动加入索引, dvi2ps 加入-z 参数
+% 为了支持pdftex 使用不同的宏包选项
+%当 bookmarksnumbered=true时，用pdflatex编译得到的PDF文件的书签不能正常显示，
+%可以通过应用gbk2uni.exe对 main.out 文件进行处理后再进行一次编译得到正常的书签.
+%若bookmarksnumbered=false则基本无此问题
+%\ifx\pdfoutput\undefined
+\usepackage[dvips]{graphicx}
+\usepackage[dvipdfm,
+            pdfstartview=FitH,
+            CJKbookmarks=true,
+            bookmarksnumbered=true,
+            bookmarksopen=true,
+            colorlinks=true, %注释掉此项则交叉引用为彩色边框(将colorlinks和pdfborder同时注释掉)
+            pdfborder=001,   %注释掉此项则交叉引用为彩色边框
+            citecolor=blue,%
+            linkcolor=blue
+            ]{hyperref}
+%\AtBeginDvi{\special{pdf:tounicode GBK-EUC-UCS2}} % GBK -> Unicode
+%\else
+%\usepackage[dvipdf,
+%            pdfstartview=FitH,
+%            CJKbookmarks=true,
+%            bookmarksnumbered=true,
+%            bookmarksopen=true,
+%            colorlinks=true,   %注释掉此项则交叉引用为彩色边框
+%            citecolor=blue,%
+%            linkcolor=blue       　
+%            ]{hyperref}
+%\usepackage[pdftex]{graphicx}
+%\fi
+%\usepackage{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{hypernat}
+\usepackage{color}              % 支持彩色
+\usepackage{subfigure}          % 支持子图
+\usepackage{floatflt}           % 图文混排用宏包
+\usepackage{rotating}           % 图形和表格的控制
+\usepackage{flafter}            % 因为图形可浮动到当前页的顶部，所以它可能会出现
+                                % 在它所在文本的前面. 要防止这种情况，可使用 flafter
+                                % 宏包
+\usepackage[below]{placeins}    %浮动图形控制宏包
+                                %允许上一个section的浮动图形出现在下一个
+                                %section的开始部分该宏包提供处理浮动对象
+                                %的 \FloatBarrier 命令，使所有未处理的浮动
+                                %图形立即被处理
+%\usepackage{endfloat}          %可将浮动对象放置到文件的最后
+%\usepackage{overpic}           %将LaTeX对象放置在图上
+%\usepackage{pstricks}          %Postscript macrosfor Generic TeX(我没用过，据说很强)
+\usepackage{bez123}
+%============================表格支持宏包=================================%
+\usepackage{rotating}   % 用法 \begin{sidewaystable}....\end{sidewaystable}
+                        % 即可旋转表格
+\usepackage{longtable}  % 支持长表格
+\usepackage{tabls}
+\usepackage{multirow}   % 表格多行合并, 矩阵的边注
+\usepackage{colortbl}   % 彩色表格
+\usepackage{dcolumn}    % 让表格中将小数点对齐
+\usepackage{hhline}     % 在表格中用 \hhline 得到的结果就如同\hline
+                        % 或 \hline\hline,当然在和垂直线的交叉处会有所不同。
+\usepackage{slashbox}   % 可在表格的单元格中画上一斜线。
+
+%\newcommand{\centpcol}{\leftskip\fill \rightskip\fill}%制表使可用p{ncm}设置栏宽,还使本栏居中
+
+%\iffalse 举例
+%  \begin{tabular}{|l|c|c|} \hline
+%    & \multicolumn{2}{c|}{MRD} \\ \cline{2-3}
+%   & \multicolumn{1}{p{3.5cm}|}{\centpcol Same as previous response} &
+%     \multicolumn{1}{p{3.5cm}|}{\centpcol Different from previous response}\\
+%   \hline
+%    Observed frequency & 966 & 148 \\
+%    Expected frequency & 1066 & 48 \\ \hline
+%    \multicolumn{3}{c}{${\chi}^2 = 213.97,\quad \mathit{d.f.}=1,\quad p<0.001$}
+%  \end{tabular}
+%\fi
+
+%============================版面控制宏包=================================%
+%\usepackage[top=1.7cm,bottom=2cm,left=2.5cm,right=2.1cm,includehead,includefoot]{geometry}                 % 页面设置
+\usepackage[top=3.5cm,bottom=3.5cm,left=2.5cm,right=2.5cm,includefoot]{geometry}%定制页面大小
+
+%---------------------------16开纸张大小页面设置--------------------------------%
+%16开不是标准的西式纸张大小,比a4,letter小,比b5稍大.可以通过使用anysize宏包实现:
+%可以很好的解决在PdFLaTeX下纸张大小问题;但不能很好解决,LaTeX以及DVI2PDF下的问题
+%请注意\documentclass[]{book}%中不要指明诸用a4paper之类的选项, 其他选项无所谓.
+%若要用16开纸请将下列\iffalse \fi 注释掉
+\iffalse
+\usepackage{anysize}
+%\papersize{height}{width}%设置页面的大小。这个命令可以不用，因为缺省可在%\documentclass选项中设定标准得页面大小。一般为a4paper。
+\papersize{26cm}{18.4cm}
+%\marginsize{left}{right}{top}{bottom}%{}中指的是各边界的margin,对于像book等双面版式来说，这里的left和right在奇偶页会互换。
+\marginsize{2.5cm}{2.1cm}{2cm}{2cm}
+\fi
+
+\usepackage{indentfirst}                 %  首行缩进宏包
+\usepackage[perpage,symbol]{footmisc}    %  脚注控制
+\usepackage{fancyhdr}                    %  fancyhdr宏包 页眉和页脚的相关定义
+\usepackage{lastpage}                    % 自动记录总页数宏包，计数器为 LastPage
+                                         % 注意大小写
+\usepackage{pageno}                      % 章首页的页眉处理, 可以改为自己想要的形式
+%\iffalse \makeatletter
+%\renewcommand{\ps@plain}{%
+%   \renewcommand{\@mkboth}{\@gobbletwo}%
+%   \renewcommand{\@evenhead}{\reset@font\sf -- \thepage -- \hfil}%
+%   \renewcommand{\@oddhead}{\reset@font\sf\hfil -- \thepage --}%
+%   \renewcommand{\@evenfoot}{}%
+%   \renewcommand{\@oddfoot}{}
+%} \makeatother \fi
+
+%======================= 多列文本与多列编号宏包 ===========================%
+\usepackage{multicol,multienum}
+%\iffalse 用法为：可嵌套使用
+%\begin{multienumerate}[evenlist,oddlist]
+%\mitemxxxx{Not}{Linear}{Not}{Quadratic}
+%\mitemxxxo{Not}{Linear}{No; if $x=3$, then $y=-2$.}
+%\mitemxx{$(x_1,x_2)=(2+\frac{1}{3}t,t)$ or
+%$(s,3s-6)$}{$(x_1,x_2,x_3)=(2+\frac{5}{2}s-3t,s,t)$}
+%\end{multienumerate}
+%\begin{multicols}{2}
+%\end{multicols}
+%\fi
+
+%======================== 数学公式相关宏包 ===============================%
+\usepackage{bm}         % 处理数学公式中的黑斜体的宏包
+\usepackage{amsmath}    % AMSLaTeX宏包 用来排出更加漂亮的公式
+\usepackage{amssymb}    % AMSLaTeX宏包 用来排出更加漂亮的公式
+%\usepackage{mathrsfs}  % 不同于\mathcal or \mathfrak 之类的英文花体字体
+\usepackage[amsmath,thmmarks]{ntheorem} % 定理类环境宏包，其中 amsmath 选项
+                                        % 用来兼容 AMS LaTeX 的宏包
+\usepackage{subeqnarray} %多个子方程(1-1a)(1-1b)
+%\iffalse 以下是一个例子
+%\begin{subeqnarray}
+%\label{eqw} \slabel{eq0}
+% x & = & a \times b \\
+%\slabel{eq1}
+% & = & z + t\\
+%\slabel{eq2}
+% & = & z + t
+%\end{subeqnarray}
+%\fi
+
+%=============================标题与列表宏包=============================%
+\usepackage[sf]{titlesec}   % 控制标题的宏包,配合命令在后面,
+                            % 将cjk+miktex+scrbook+gb.cap下的章的标题号,
+                            % 比如~``第二章 ＸＸＸ''位置于中心
+
+\usepackage{titletoc}     %定制目录的宏包
+%\usepackage{hyperref}
+%\usepackage[super,sort&compress,numbers]{natbib}  % 支持引用的宏包
+%\usepackage{hypernat}
+\newcommand{\supercite}[1]{\textsuperscript{\cite{#1}}}
+\usepackage{enumerate}      % 改变列表标号样式宏包 其后可接选项[a,A,i,I,1]
+\usepackage{ccaption}\captiondelim{\ }       % 浮动图形和表格标题样式,可选项为
+                            % [scriptsize,footnotesize,centerlast]
+%\usepackage{setspace}      % 图形和表格的标题如果是多行，行距比较大,可以加宏包
+\usepackage{pifont}         % 有很漂亮的带圈的各种数字符号使用
+%\usepackage{atbeginend}    % 可选宏包, 能解决许多问题,
+                            % 比如itemize, enumerate环境\item之间的控制
+%用法
+%\AfterBegin{itemize}{\addtolength{\itemsep}{-0.5\baselineskip}}
+%\AfterBegin{enumerate}{\addtolength{\itemsep}{-0.5\baselineskip}}
+
+\iffalse
+%=================== 支持LaTexCAD生成的源程序的宏包 =====================%
+\usepackage{TEXcad/lgrind}     % for formated source code
+\usepackage{TEXcad/latexcad}   % latexcad.sty for drawings etc
+\usepackage{TEXcad/epic}       %picture macros
+\usepackage{TEXcad/eepic}      %extended picture macros
+\usepackage{TEXcad/fancybox}   %box macros
+\usepackage{TEXcad/epsf}       %postscript macros
+\usepackage{TEXcad/rotate}     % postscript text rotation macros
+
+
+%=========================== 特殊文本元素宏包 ==============================%
+\usepackage{nicefrac}   % 在正文文本中排版分式时，可以用它来得到较好的排版效果。
+\usepackage{units}      % 基于 nicefrac 宏包，提供对计量单位比较美观的排版效果。
+\usepackage{soul}       % 支持对单词加上下划线或其每个字母在一定的宽度内均匀散布
+\usepackage{altfont}    % 使用该宏包, 可以在一个宏包中使用多种不同的字体,
+                        % 包括PSNFSS 和 MFNFSS
+%\usepackage{prelim2e}  % 可以在每页页脚下方标记出本文档的版本信息等
+\usepackage{a0size}     %自由定义字号,在后面“字号设置”中可设置到107pt为止的大字体
+\fi
+
+%=================================源代码宏包================================%
+\usepackage{listings}
+
+%=================================建立索引宏包================================%
+\usepackage{makeidx}
+\makeindex
+
+%*******************自定义计数器，统计论文总页表格数，插图数*************************
+\newcounter{totalfig}           %***在正文含有表或图的每章chapter开始前，加上如下两句
+\newcounter{totaltab}           %***\addtocounter{totalfig}{\value{figure}}
+                                %***\addtocounter{totaltab}{\value{table}}
+
+\newcommand{\ctex}{C\TeX}

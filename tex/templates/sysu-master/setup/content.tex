@@ -1,0 +1,21 @@
+\cleardoublepage\phantomsection
+\addcontentsline{toc}{chapter}{\hspace*{0.2cm}目\qquad 录}
+%-------目录------------------------
+
+%\thispagestyle{empty} %取消当前页眉
+%\setcounter{page}{1}
+%\renewcommand{\thepage}{\roman{page}}
+%\pagenumbering{\roman}
+%目录中的点间距太大，改变 \@dotsep 的值可以减小
+\makeatletter
+   \renewcommand{\@dotsep}{0.8}
+\makeatother
+
+\setcounter{tocdepth}{1} \tableofcontents
+% 大连理工大学学位论文版权使用说明书\dotfill120
+%\listoffigures %显示所有插图目录
+%\listoftables %显示所有表格目录
+%显示所有定理类目录
+%\listtheorems{definition}
+%\listtheorems{example}
+%\listtheorems{theorem}

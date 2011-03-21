@@ -1,0 +1,92 @@
+%=========================================================================%
+%   LaTeX File for Master thesis of Sun Yat-Sen University
+%-------------------------------------------------------------------------%
+%   Copyright 2004  by      (FBI@BHQT)
+%-------------------------------------------------------------------------%
+%   Latex 硕士论文模板
+%   在ctex2.3.3(miktex2.3)、ctex2.4.6完全安装下通过测试.
+%   本模板使用ctex.org的cjk版本
+%   -- 经刘成明根据大连理工大学研究生院2007-6-5发布的博士学位论文模板修改而成。
+%      2008年5月8日根据中山大学研究生院最新模板修订。
+%   -- 2009年4月经车春回根据刘成明老师的博士论文模板修改而成，符合中山大学硕士
+%      硕士研究生要求。
+%=========================================================================%
+
+\documentclass[12pt,openany,a4paper,twoside]{book}
+%algorithm和algorithmic这两个宏包用于画伪代码
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+%使用booktab宏包定义三条划线命令：\toprule、\midrule 和 \bottomrule
+%用于画三线表
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+
+\input{setup/package}
+
+\begin{document}
+\begin{CJK*}{GBK}{song}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%设置区%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%此处填入中文论文题目
+\newcommand{\ctitle}{基于机器学习的因特网流量分类研究}
+%此处填入英文论文题目
+\newcommand{\etitle}{Network Traffic Classification Based on Machine Learning}
+%此处填入作者中文名
+\newcommand{\cauthor}{车春回}
+%此处填入作者英文名
+\newcommand{\eauthor}{Chunhui CHE}
+%此处填入导师姓名
+\newcommand{\supervisor}{王建民\ 副教授}
+%此处填入专业名称
+\newcommand{\esupervisor}{Associate Professor Jianmin WANG}
+%此处填入专业名称
+\newcommand{\major}{计算机应用技术}
+%此处填入专业名称
+\newcommand{\emajor}{Computer Application and Technology}
+%此处填入论文完成时间
+\newcommand{\finishdate}{2009~年~5~月}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{setup/format}
+
+\CJKcaption{setup/GB}  %使目次，图表，章节标题符合中文习惯
+\CJKindent
+
+\include{setup/cover}      %**********封面
+\include{setup/account}    %**********原创性声明
+%
+\renewcommand{\baselinestretch}{1.5}\normalsize      % 定义行距
+%
+\include{abstract/abstract_cn}    %**********中文摘要
+\include{abstract/abstract_en}    %**********英文摘要
+%
+\include{setup/content}    %***********生成目录
+%
+\input{setup/setchapter}    %**********设置章标题显示格式
+%
+
+
+\include{content/Chapter-introduction}       %*********前言
+%
+\include{content/Chapter-classficationArchitecture}     %*********因特网流量分类过程
+%
+\include{content/Chapter-machineLearning}      %*********基于机器学习的因特网流量分类
+%
+\include{content/Chapter-experiment}        %*********实验分析与结论
+%
+\include{content/Chapter-summary}        %*********总结与展望
+
+
+%
+\input{setup/setothers}       %*********设置其它部分章标题格式
+%
+\input{setup/bib}             %*********参考文献格式
+\bibliography{ref}            %*********设置bib文件路径
+%
+\include{appendix/appendix}      %********附录
+%
+\include{appendix/resume}        %********个人简历
+%
+\include{appendix/thanks}        %********致谢
+%
+\end{CJK*}
+\end{document}

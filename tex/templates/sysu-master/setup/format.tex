@@ -1,0 +1,425 @@
+%=========================================================================%
+%   LaTeX File for PhD thesis of Dalian University of Technology
+%-------------------------------------------------------------------------%
+%   Copyright 2003  by     (FBI@BHQT)
+%=========================================================================%
+
+%=========================================================================%
+%                          主文档 格式定义
+%=========================================================================%
+
+%===================== 重定义字体、字号命令 =============================%
+% 注意win2000,没有 simsun,　最好到网上找一个。一些字体是office2000带的
+\newcommand{\song}{\CJKfamily{song}}       % 宋体   (Windows自带simsun.ttf)
+\newcommand{\fs}{\CJKfamily{fs}}           % 仿宋体 (Windows自带simfs.ttf)
+\newcommand{\kai}{\CJKfamily{kai}}         % 楷体   (Windows自带simkai.ttf)
+\newcommand{\hei}{\CJKfamily{hei}}         % 黑体   (Windows自带simhei.ttf)
+\newcommand{\li}{\CJKfamily{li}}           % 隶书   (Windows自带simli.ttf)
+\newcommand{\you}{\CJKfamily{you}}         % 幼圆   (Windows自带simyou.ttf)
+\newcommand{\xingkai}{\CJKfamily{xingkai}} %华文行楷
+\newcommand{\chuhao}{\fontsize{42pt}{\baselineskip}\selectfont}     % 字号设置
+\newcommand{\xiaochuhao}{\fontsize{36pt}{\baselineskip}\selectfont} % 字号设置
+\newcommand{\xiaoyi}{\fontsize{24pt}{\baselineskip}\selectfont}     % 小一, 单倍行距
+\newcommand{\yihao}{\fontsize{28pt}{\baselineskip}\selectfont}      % 字号设置
+\newcommand{\erhao}{\fontsize{21pt}{\baselineskip}\selectfont}      % 字号设置
+\newcommand{\xiaoerhao}{\fontsize{18pt}{\baselineskip}\selectfont}  % 字号设置
+\newcommand{\sanhao}{\fontsize{15.75pt}{\baselineskip}\selectfont}  % 字号设置
+\newcommand{\xiaosanhao}{\fontsize{15pt}{\baselineskip}\selectfont} % 字号设置
+\newcommand{\sihao}{\fontsize{14pt}{\baselineskip}\selectfont}      % 字号设置
+\newcommand{\xiaosihao}{\fontsize{12pt}{\baselineskip}\selectfont}  % 字号设置
+\newcommand{\wuhao}{\fontsize{10.5pt}{\baselineskip}\selectfont}    % 字号设置
+\newcommand{\xiaowuhao}{\fontsize{9pt}{\baselineskip}\selectfont}   % 字号设置
+\newcommand{\liuhao}{\fontsize{7.875pt}{\baselineskip}\selectfont}  % 字号设置
+\newcommand{\qihao}{\fontsize{5.25pt}{\baselineskip}\selectfont}    % 字号设置
+
+%===================================================================%
+%                         各种距离与缩进
+%===================================================================%
+
+%-------------------- 用于中文段落缩进 和正文版式 ------------------%
+%\CJKcaption{GB_aloft14q}
+\setlength{\parindent}{2em}                 % 首行两个汉字的缩进量
+\setlength{\parskip}{3pt plus1pt minus1pt}  % 段落之间的竖直距离
+\renewcommand{\baselinestretch}{1.25}\normalsize      % 定义行距
+
+%------------------------- 列表与图表距离设置 -----------------------%
+\setlength{\topsep}{3pt plus1pt minus2pt}           % 第一个item和前面版落间的距离
+\setlength{\partopsep}{3pt plus1pt minus2pt}        % 当在一个新页开始时加到
+                                                    % \topsep的额外空间
+\setlength{\itemsep}{3pt plus1pt minus2pt}          % 连续items之间的距离.
+\setlength{\floatsep}{10pt plus 3pt minus 2pt}      % 图形之间或图形与正文之间的距离
+\setlength{\abovecaptionskip}{2pt plus1pt minus1pt} % 图形中的图与标题之间的距离
+\setlength{\belowcaptionskip}{3pt plus1pt minus2pt} % 表格中的表与标题之间的距离
+
+%下面这组命令使浮动对象的缺省值稍微宽松一点，从而防止幅度
+%对象占据过多的文本页面，也可以防止在很大空白的浮动页上放置
+%很小的图形。
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.65}
+\renewcommand{\floatpagefraction}{0.60}
+
+%---------------------------- 数学公式设置 ------------------------------%
+\setlength{\abovedisplayskip}{5pt plus1pt minus1pt}     %公式前的距离
+\setlength{\belowdisplayskip}{5pt plus1pt minus1pt}     %公式后面的距离
+\setlength{\arraycolsep}{2pt}   %在一个array中列之间的空白长度, 因为原来的太宽了
+
+\allowdisplaybreaks[4]  % \eqnarray如果很长，影响分栏、换行和分页
+                        %（整块挪动，造成页面空白），可以设置成为自动调整模式
+
+\renewcommand{\mathbf}[1]{\boldsymbol{#1}}  %重新定义 \mathbold 为矢量黑斜体
+                                            %用Mathtype生成的公式源码直接应用于程序中
+                                            %（导出时请选择 TeX-AMS-LaTeX ）
+
+\newcommand{\me}{\mathrm{e}}  %定义 对数常数e，虚数符号i,j以及微分算子d为直立体。
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\mj}{\mathrm{j}}
+\newcommand{\dif}{\mathrm{d}}
+
+%===================================================================%
+%                         各种标题样式
+%===================================================================%
+%======================= 标题名称中文化 ============================%
+\renewcommand\contentsname{目\ 录}
+\renewcommand\listfigurename{插\ 图\ 目\ 录}
+\renewcommand\listtablename{表\ 格\ 目\ 录}
+%\renewcommand\abstractname{摘\ 要} %err undefined
+%\renewcommand\refname{参考文献}         %article类型
+%\renewcommand\bibname{\song\sanhao{\textbf{参\ 考\ 文\ 献}}}    %book类型
+\renewcommand\indexname{索\ 引}
+\renewcommand\figurename{图}
+\renewcommand\tablename{表}
+\renewcommand\partname{第\CJKnumber{\value{part}}部分}
+\renewcommand\chaptername{第\CJKnumber{\value{chapter}}章}
+%\renewcommand\chaptername{\CJKprechaptername\CJKthechapter\CJKchaptername}
+%======================= 定制章节的标题样式 =============================%
+\setcounter{secnumdepth}{3}
+%---------------------- 定义章节的编号格式 --------------------------%
+%\renewcommand{\thesection}{\CJKnumber{\arabic{section}}、} % 定义 一、。九、十
+\renewcommand{\thesection}{\arabic{chapter}.\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{chapter}.\arabic{section}.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
+\let\oldtitle=\title
+\def\title#1{\oldtitle{\cnbf{#1}}}
+
+\CJKtilde   %用于解决英文字母和汉字的间距问题。例如：变量~$x$~的值。
+            %这个命令重新定义~。等价于 \def~{\hspace{0.25em plus 0.125em minus 0.08em}}
+            %若想恢复~,则用命令 \standardtilde 。
+
+\renewcommand{\CJKglue}{\hskip 0pt plus 0.08\baselineskip}
+%\CJKglue   %这个命令原始定义为
+            %newcommand{\CJKglue}{\hskip 0pt plus 0.08\baselineskip}
+            %它于必要时在汉字之间插入一个附加的空隙，以解决行的超长问题。
+            %可以修改此命令，增加它的值，以加强其调节能力。
+            %注意，使用这个命令可能导致出现空白页!!!
+
+%----------------------- 定义章节标题格式 ----------------------------%
+
+\titleformat{\chapter}[hang]{\xiaoerhao\filcenter\CJKfamily{hei}\Large}
+        {\Large \chaptertitlename}{10em}{}{}
+%\titleformat{\chapter}[hang]{\normalfont\sanhao\filcenter\CJKfamily{hei}}
+%    {\sanhao{\chaptertitlename}}{20pt}{\huge}
+\titlespacing{\chapter}{0pt}{-3ex  plus .1ex minus .2ex}{2.5ex plus .1ex minus .2ex}
+
+%\titleformat{\section}[hang]{\CJKfamily{hei}\Large \centering} %标题居中
+\titleformat{\section}[hang]{\sanhao\CJKfamily{hei}}
+    {\sihao\thesection}{1em}{}{}
+\titlespacing{\section}
+    {0pt}{1.5ex plus .1ex minus .2ex}{\wordsep}
+
+\titleformat{\subsection}[hang]{\sihao\CJKfamily{hei}}
+    {\sihao\thesubsection}{1em}{}{}
+\titlespacing{\subsection}%
+    {0pt}{1.5ex plus .1ex minus .2ex}{\wordsep}
+
+\titleformat{\subsubsection}[hang]{\CJKfamily{hei}}
+    {\thesubsubsection }{1em}{}{}
+\titlespacing{\subsubsection}%
+    {0pt}{1.2ex plus .1ex minus .2ex}{\wordsep}
+
+%======================= 定义列表项目格式 ==========================%
+\renewcommand\labelenumi{\textcircled{\scriptsize \theenumi}}  %带圈的数字
+%\renewcommand\labelenumi{(\theenumi)}
+\renewcommand\labelenumii{(\theenumii)}
+\renewcommand\labelenumiii{\theenumiii.}
+\renewcommand\labelenumiv{\theenumiv.}
+
+%====================== 定制图形和表格标题样式 =====================%
+%---------------------- 定制图形和表格标题格式 ---------------------%
+\renewcommand{\captiondelim}{\ } %定义如  "图(表)2: 示例" 中的间隔符号,如 ":" ,这里定义为空
+%\renewcommand{\captionlabelsep}{\hspace{1em}} %定义图表编号与标题间的间隔距离
+%\renewcommand{\captionlabelfont}{\small \CJKfamily{hei}\bf} %定义图表标签的字体
+%\renewcommand{\captionfont}{\small \CJKfamily{song}\rmfamily} %定义图表标题内容的字体
+%% \scriptsize \footnotesize \small \large \Large  %图形标签字体大小
+
+
+%--------------------- 定义图、表、公式的编号格式 -------------------%
+\renewcommand{\thetable}{\arabic{chapter}-\arabic{table}}
+%\renewcommand{\theequation}{\arabic{chapter}-\arabic{equation}}
+\renewcommand{\thefigure}{\arabic{chapter}-\arabic{figure}}
+
+
+%=========================== 目录设置 ==================================%
+\setcounter{tocdepth}{2} \setcounter{secnumdepth}{2}
+% 可以用\section[abc]{abcdefg}形式的命令,这样abc就做为缩短标题出现
+% 在目录表中和页眉上.另外,还可以利用\addtocounter{secnumdepth}{num}
+% 来使得当前章节编号深度增加或减小,num可取正值或负值.
+%*******取自ctex           定义目录格式   启用titletoc宏包
+%%******序号，标题间距等
+\titlecontents{chapter}[2.em]{\color{black}\normalsize}%\CJKfamily{hei}\addvspace{4ex}}
+ {\contentslabel{2em}\hspace*{1.0em}}{\hspace*{-2.3em}}
+ {\color{black}\titlerule*[0.4pc]{.}\contentspage}[\addvspace{0.5ex}]
+
+\titlecontents{section}
+[3.4em] {\color{black}\normalsize}
+{\contentslabel{2em}\hspace*{-0.0em}} {\hspace*{-2.3em}}
+{\color{black}\titlerule*[0.4pc]{.}\contentspage}
+
+\titlecontents{subsection}
+[5.4em] {\color{black}\normalsize}
+{\contentslabel{2em}\hspace*{1.0em}} {\hspace*{-3.3em}}
+{\color{black}\titlerule*[0.4pc]{.}\contentspage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%  缩小目录中各级标题之间的缩进
+%\dottedcontents{chapter}[1.0em]{\hei\vspace{0.1em}}{1.0em}{5pt}
+%\dottedcontents{section}[2.2cm]{}{2.5em}{5pt}
+%\dottedcontents{subsection}[3.0cm]{}{2.5em}{5pt}
+%\dottedcontents{subsubsection}[2.86cm]{}{3.4em}{5pt}
+
+
+%============================= 页面设置 ================================%
+%-------------------- 定义页眉和页脚 使用fancyhdr 宏包 -----------------%
+% 定义页眉与正文间双隔线
+\iffalse
+\newcommand{\makeheadrule}{%
+    \makebox[-3pt][l]{\rule[.7\baselineskip]{\headwidth}{0.4pt}}
+    \rule[0.85\baselineskip]{\headwidth}{1.5pt}\vskip-.8\baselineskip}
+\makeatletter
+\renewcommand{\headrule}{%
+    {\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
+     \makeheadrule}}
+\makeatother
+\fi
+
+%**************重定义在页眉处画一单横线
+\newcommand{\makeheadrule}{%
+    \makebox[-3pt][l]{\rule[0.7\baselineskip]{\headwidth}{0.4pt}}}
+%    \rule[0.85\baselineskip]{\headwidth}{1.5pt}\vskip-.8\baselineskip}
+\makeatletter
+\renewcommand{\headrule}{%
+    {\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
+     \makeheadrule}}
+\makeatother
+
+%如果需要画单隔线，则需要
+\iffalse%-------------------------------%
+\renewcommand{\headrulewidth}{0.5pt}    %在页眉下画一个0.5pt宽的分隔线
+\renewcommand{\footrulewidth}{0pt}      % 在页脚不画分隔线。
+\fi%-------------------------------------%
+
+\pagestyle{fancyplain}
+
+\renewcommand{\chaptermark}[1]%
+{\markboth{\chaptername \ #1}{}}            % \chaptermark 去掉章节标题中的数字
+\renewcommand{\sectionmark}[1]%
+{\markright{\thesection \ #1}{}}            % \sectionmark 去掉章节标题中的数字
+\fancyhf{}  %清除以前对页眉页脚的设置
+
+\fancyhead[CO]{\color{black}\CJKfamily{song}\wuhao\ctitle\hfill\leftmark}     % 在book文件类别下,
+\fancyhead[CE]{\color{black}\CJKfamily{song}\wuhao\ctitle\hfill\leftmark}     % \leftmark自动存录各章之章名,
+%\fancyhead[C]{\color{blue}\CJKfamily{fs}{\mytitle}}       %此处替换论文的题目
+%\fancyfoot[L]{\CJKfamily{fs}hdwyn@sohu.com}             % \rightmark记录节标题
+\fancyfoot[C]%                                          % [RE][LO]
+{\CJKfamily{hei} -~\thepage~-}
+%{\CJKfamily{hei} 第\thepage页,共\pageref{LastPage}页}
+%\fancyfoot[R]{\CJKfamily{fs}学位论文模板}
+
+%如果要要改变封面和章首页的页眉和页脚，则需要
+\iffalse%----------------------------------------%
+\fancypagestyle{plain} {
+\fancyhead{}                                    % clear all header fields
+\fancyhead[CE,CO]{这是章首页或封面的页眉}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot{}                                    % clear all footer fields
+\fancyfoot[CE,CO]{\thepage} }
+\fi%--------------------------------------------%
+
+%=== 配合前面的ntheorem宏包产生各种定理结构,重定义一些正文相关标题 ===%
+\theoremstyle{plain}
+\theoremheaderfont{\normalfont\rmfamily\CJKfamily{hei}}
+%\theorembodyfont{\normalfont\rm\CJKfamily{song}} \theoremindent0em
+\theorembodyfont{\normalfont\rm\CJKfamily{kai}} \theoremindent0em
+\theoremseparator{\hspace{1em}} \theoremnumbering{arabic}
+%\theoremsymbol{}          %定理结束时自动添加的标志
+\newtheorem{definition}{\hspace{2em}定义}[chapter]
+%\newtheorem{definition}{\hei 定义}[section] %!!!注意当section为中国数字时，[sction]不可用！
+\newtheorem{proposition}{\hspace{2em}命题}[chapter]
+\newtheorem{property}{\hspace{2em}性质}[chapter]
+\newtheorem{lemma}{\hspace{2em}引理}[chapter]
+%\newtheorem{lemma}[definition]{引理}
+\newtheorem{theorem}{\hspace{2em}定理}[chapter]
+\newtheorem{axiom}{\hspace{2em}公理}[chapter]
+\newtheorem{corollary}{\hspace{2em}推论}[chapter]
+\newtheorem{exercise}{\hspace{2em}习题}[chapter]
+\theoremsymbol{$\blacksquare$}
+\newtheorem{example}{\hspace{2em}例}[chapter]
+
+\theoremstyle{nonumberplain}
+\theoremheaderfont{\CJKfamily{hei}\rmfamily}
+\theorembodyfont{\normalfont \rm \CJKfamily{song}}
+\theoremindent0em \theoremseparator{\hspace{1em}}
+\theoremsymbol{$\blacksquare$}
+\newtheorem{proof}{\hspace{2em}证明}
+
+%=========================== 修改引用的格式 ==============================%
+% 第一行在引用处数字两边加方框
+% 第二行去除参考文献里数字两边的方框
+%\makeatletter
+%\def\@cite#1{\mbox{$\m@th^{\hbox{\@ove@rcfont[#1]}}$}}
+%\renewcommand\@biblabel[1]{#1}
+%\makeatother
+% 增加 \upcite 命令使显示的引用为上标形式
+%\newcommand{\upcite}[1]{$^{\mbox{\scriptsize \cite{#1}}}$}             % 方法1
+\newcommand{\upcite}[1]{\textsuperscript{\textsuperscript{\cite{#1}}}}  % 方法2
+%\makeatletter
+%\def\@cite#1#2{\textsuperscript{[{#1\if@tempswa,#2\fi}]}}
+%\makeatother
+%=============================== 脚注 =============================%
+\renewcommand{\thefootnote}{\arabic{footnote}}
+%detcounter{footnote}{0}
+
+%==================== 定义题头格言的格式 ==========================%
+% 用法 \begin{Aphorism}{author}
+%         aphorism
+%      \end{Aphorism}
+\newsavebox{\AphorismAuthor}
+\newenvironment{Aphorism}[1]
+{\vspace{0.5cm}\begin{sloppypar} \slshape
+\sbox{\AphorismAuthor}{#1}
+\begin{quote}\small\itshape }
+{\\ \hspace*{\fill}------\hspace{0.2cm} \usebox{\AphorismAuthor}
+\end{quote}
+\end{sloppypar}\vspace{0.5cm}}
+
+%============================== 控制表格线宽 ==========================%
+% 更改横线（\hline）线宽:定义如下命令\hlinewd代替\hline。
+% 更改垂直线（\vline）线宽:使用\usapackage{array}，则可以在指定垂直线的地方用
+% “!{\vrule width 3.5pt}”代替“|”，如“|c!{\vrule width 5pt}p{5cm}|r|”
+
+\makeatletter
+\def\hlinewd#1{%
+  \noalign{\ifnum0=`}\fi\hrule \@height #1 \futurelet
+   \reserved@a\@xhline}
+\makeatother
+\newcommand\vlinewd[1][1pt]{\vrule width #1}
+
+% 不过上面的命令\hlinewd不能与longtable正常工作（reported by %钟圣俊老师），
+% 只能使用下面的方法实现线宽控制：
+%
+%\setlength{\arrayrulewidth}{0.5pt}
+%\setlength{\doublerulesep}{\arrayrulewidth}
+%\newcommand{\dhline}{\hline\hline}
+%\newcommand{\thline}{\hline\hline\hline}
+%（类似的可以定义更多不同宽度的\hline）
+
+
+%========================== 其它自定义 ==============================%
+%====================================================================%
+% 下面定义的命令（\alpheqn \reseteqn）可以使公式编号变为 4-a，4-b
+% 使用说明：\alpheqn 为开始产生处，\reseteqn为恢复原来公式编号形式处
+% 这两个命令为自定义，使用时应注意：不可放于 数学环境中！！！
+% 在公式开始前和结束后使用！！！
+%====================================================================%
+%\newcounter{saveeqn}%
+%
+%\newcommand{\alpheqn}{%
+%\setcounter{saveeqn}{\value{equation}}%
+%\stepcounter{saveeqn}%
+%\setcounter{equation}{0}%
+%%\renewcommand{\theequation}{\arabic{saveeqn}-\alph{equation}}}%%article 中的定义
+%%\renewcommand{\theequation}{\arabic{chapter}-\arabic{saveeqn}\alph{equation}}}%book %中的定义
+%%{\mbox{\arabic{equation}-\alph{equation}}}}%
+%
+%\newcommand{\reseteqn}{%
+%\setcounter{equation}{\arabic{chapter}-\value{saveeqn}}%
+%%%\renewcommand{\theequation}{\arabic{equation}}}    %article 中的定义
+%\renewcommand{\theequation}{\arabic{chapter}-\arabic{equation}}}  %book 中的定义
+\numberwithin{equation}{chapter}
+%====================================================================%
+% 下面定义的命令（\alphfig \resetfig）可以使插图编号变为 4-a，4-b
+% 使用说明：\alphfig 为开始产生处，\resetfig为恢复原来插图编号形式处
+% 这两个命令为自定义，使用时应注意：不可放于 数学环境中！！！
+% 在插图开始前和结束后使用！！！
+%====================================================================%
+\newcounter{savefig}%
+
+\newcommand{\alphfig}{%
+\setcounter{savefig}{\value{figure}}%
+\stepcounter{savefig}%
+\setcounter{figure}{0}%
+%%\renewcommand{\thefigure}{\arabic{savefig}-\alph{figure}}}%%article 中的定义
+\renewcommand{\thefigure}{\arabic{chapter}-\arabic{savefig}\alph{figure}}}%book 中的定义
+%{\mbox{\arabic{figure}-\alph{figure}}}}%
+
+\newcommand{\resetfig}{%
+\setcounter{figure}{\value{savefig}}%
+%%\renewcommand{\thefigure}{\arabic{figure}}}    %article 中的定义
+\renewcommand{\thefigure}{\arabic{chapter}-\arabic{figure}}}  %book 中的定义
+
+%====================================================================%
+% 下面定义的命令（\alphtab \resettab）可以使表格编号变为 4-a，4-b
+% 使用说明：\alphtab 为开始产生处，\resettab为恢复原来表格编号形式处
+% 这两个命令为自定义，使用时应注意：不可放于 数学环境中！！！
+% 在表格开始前和结束后使用！！！
+%====================================================================%
+\newcounter{savetab}%
+
+\newcommand{\alphtab}{%
+\setcounter{savetab}{\value{table}}%
+\stepcounter{savetab}%
+\setcounter{table}{0}%
+%%\renewcommand{\thetable}{\arabic{savetab}-\alph{table}}}%%article 中的定义
+\renewcommand{\thetable}{\arabic{chapter}-\arabic{savetab}\alph{table}}}%%book 中的定义
+%{\mbox{\arabic{table}-\alph{table}}}}%
+
+\newcommand{\resettab}{%
+\setcounter{table}{\value{savetab}}%
+%%\renewcommand{\thetable}{\arabic{table}}}    %article 中的定义
+\renewcommand{\thetable}{\arabic{chapter}-\arabic{table}}}  %book 中的定义
+
+%====================================================================%
+% 自定义项目列表标签及格式 \begin{mylist} 列表项 \end{mylist}
+%====================================================================%
+\newcounter{newlist} %自定义新计数器
+\newenvironment{mylist}[1][可改变的列表题目]{%%%%%定义新环境
+\begin{list}{\textbf{\hei #1} \arabic{newlist}：} %%标签格式
+    {
+     \usecounter{newlist}
+     \setlength{\labelwidth}{22pt} %标签盒子宽度
+     \setlength{\labelsep}{0cm} %标签与列表文本距离
+     \setlength{\leftmargin}{0cm} %左右边界
+     \setlength{\rightmargin}{0cm}
+     \setlength{\parsep}{0.5ex plus0.2ex minus0.1ex} %段落间距
+     \setlength{\itemsep}{0ex plus0.2ex} %标签间距
+     \setlength{\itemindent}{44pt} %标签缩进量
+     \setlength{\listparindent}{22pt} %段落缩进量
+    }}
+{\end{list}}%%%%%
+
+%% 自己重定义一个双标题的命令
+%% 使用: \figcaption{中文标题}{English titile}
+\newcommand{\figcaption}[2]{
+    \renewcommand\figurename{图}
+    \caption{#1}
+    \addtocounter{figure}{-1}
+    \renewcommand\figurename{Fig.}
+    \caption{#2}
+}
+\newcommand{\tablecaption}[2]{
+    \renewcommand\tablename{表}
+    \caption{#1}
+    \addtocounter{table}{-1}
+    \renewcommand\tablename{Tab.}
+    \caption{#2}
+}

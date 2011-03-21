@@ -1,0 +1,146 @@
+% This is the file GB.cap of the CJK package
+%   for using Asian logographs (Chinese/Japanese/Korean) with LaTeX2e
+%
+% created by Werner Lemberg <wl@gnu.org>
+%
+% Version 4.3.0 (20-Jun-1999)
+%
+% edited by aloft <aloft@ctex.org> (16-Dec-1999)
+%
+% for Standard LaTeX document class.
+
+\def\fileversion{4.3.0}
+\def\filedate{1999/06/20}
+\ProvidesFile{GB.cap}[\filedate\space\fileversion
+for Standard LaTeX document class]
+
+% Chinese captions
+%
+% character set: GB 2312-80
+% encoding: EUC
+\renewcommand\contentsname{目\qquad 录}
+\renewcommand\listfigurename{插图}
+\renewcommand\listtablename{表格}
+\@ifundefined{chapter}
+ {\renewcommand\refname{参考文献}}
+ {\renewcommand\bibname{\xiaosihao\CJKfamily{hei}{参考文献}}}
+\renewcommand\indexname{索引}
+\renewcommand\figurename{图}
+    
+\renewcommand\tablename{表}
+
+  
+\renewcommand\partname{第\CJKnumber{\value{part}}部分}
+\@ifundefined{chapter}{}{
+\renewcommand\chaptername{第~\arabic{chapter}~章}}                  
+\renewcommand\appendixname{附录~\@Alph\c@chapter}
+\@ifundefined{mainmatter}
+ {\renewcommand\abstractname{摘要}}{}
+% \renewcommand\ccname{}                     %   ?
+% \renewcommand\enclname{附件}
+% \newcommand\prepagename{}                  %   ?
+% \newcommand\postpagename{}                 %   ?
+% \renewcommand\headtoname{}                 %   ?
+% \renewcommand\seename{}                    %   ?
+\renewcommand\today{\number\year年\number\month月\number\day日}
+\@ifundefined{CJKnumber}
+ {\def\CJKnumber#1{\ifcase#1\or
+                   一\or二\or三\or四\or五\or
+                   六\or七\or八\or九\or十\fi}}{}
+\@ifundefined{chapter}{}{
+\newif\if@mainmatter \@mainmattertrue
+\if@twoside
+ \def\chaptermark#1{%
+   \markboth {\MakeUppercase{%
+     \ifnum \c@secnumdepth >\m@ne
+       \if@mainmatter
+         \@chapapp \ %
+       \fi
+     \fi
+     #1}}{}}%
+ \def\sectionmark#1{%
+   \markright {\MakeUppercase{%
+     \ifnum \c@secnumdepth >\z@
+       \thesection \ %
+     \fi
+     #1}}}
+\else
+ \def\chaptermark#1{%
+   \markright {\MakeUppercase{%
+     \ifnum \c@secnumdepth >\m@ne
+       \if@mainmatter
+         \@chapapp \ %
+       \fi
+     \fi
+     #1}}}
+\fi
+\def\@part[#1]#2{%
+   \ifnum \c@secnumdepth >-2\relax
+     \refstepcounter{part}%
+     \addcontentsline{toc}{part}{\partname\hspace{1em}#1}%
+   \else
+     \addcontentsline{toc}{part}{#1}%
+   \fi
+   \markboth{}{}%
+   {\centering
+    \interlinepenalty \@M
+    \normalfont
+    \ifnum \c@secnumdepth >-2\relax
+      \huge\bfseries \partname
+      \par
+      \vskip 20\p@
+    \fi
+    \Huge \bfseries #2\par}%
+   \@endpart}
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+                      \if@mainmatter
+                        \refstepcounter{chapter}%
+                        \typeout{\@chapapp}%
+                        \addcontentsline{toc}{chapter}%
+                                  {\protect\numberline{\@chapapp}#1}%
+                      \else
+                        \addcontentsline{toc}{chapter}{#1}%
+                      \fi
+                   \else
+                     \addcontentsline{toc}{chapter}{#1}%
+                   \fi
+                   \chaptermark{#1}%
+                   \addtocontents{lof}{\protect\addvspace{10\p@}}%
+                   \addtocontents{lot}{\protect\addvspace{10\p@}}%
+                   \if@twocolumn
+                     \@topnewpage[\@makechapterhead{#2}]%
+                   \else
+                     \@makechapterhead{#2}%
+                     \@afterheading
+                   \fi}
+\def\@makechapterhead#1{%
+ \vspace*{50\p@}%
+ {\parindent \z@ \raggedright \normalfont
+   \ifnum \c@secnumdepth >\m@ne
+     \if@mainmatter
+       \huge\bfseries \@chapapp
+       \par\nobreak
+       \vskip 20\p@
+     \fi
+   \fi
+   \interlinepenalty\@M
+   \Huge \bfseries #1\par\nobreak
+   \vskip 40\p@
+ }}
+\renewcommand*\l@chapter[2]{%
+ \ifnum \c@tocdepth >\m@ne
+   \addpenalty{-\@highpenalty}%
+   \vskip 1.0em \@plus\p@
+   \setlength\@tempdima{4.0em}%
+   \begingroup
+     \parindent \z@ \rightskip \@pnumwidth
+     \parfillskip -\@pnumwidth
+     \leavevmode \bfseries
+     \advance\leftskip\@tempdima
+     \hskip -\leftskip
+     #1\nobreak\hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+     \penalty\@highpenalty
+   \endgroup
+ \fi}
+}  %end of \@ifundefined{chapter}
+\endinput
