@@ -1,0 +1,73 @@
+#+TITLE:     品尝GNOME Shell
+#+AUTHOR:    Tiger Soldier/大兵
+#+EMAIL:     tigersoldi@gmail.com
+#+SETUPFILE: htmlslidy.org
+
+#+BEGIN_HTML
+<div class="background"> 
+  <img id="head-icon" alt="Gnome logo"
+    src="images/GnomeFoot.svg" /> 
+</div> 
+#+END_HTML
+
+* About me
+  - Tiger Soldier/大兵
+  - email/gtalk: tigersoldi@gmail.com
+  - twitter: tigersoldier
+  - OSD Lyrics 作者
+* GNOME Shell特点
+  - 简洁
+  - 高效
+  - 安静
+* 简洁：界面一览
+  - 普通模式：顶面板
+  - 活动视图：一览无余
+  - 系统托盘：默认隐藏
+* 高效：启动程序
+  - 进入活动视图：系统键 (a.k.a Super/Win key)
+  - 选择程序：搜索之
+  - 启动：回车
+* 高效：管理窗口
+  - 活动视图：切换
+  - 工作区间：动态
+  - Alt+Tab：全工作区间，分组
+  - 窗口排列：拖到边缘
+* 安静：聊天通知
+  - 想来就来，想走就走
+  - 无需切换，没有打断
+* 小贴士
+  - 运行命令：Alt+F2
+    + r: 重启gnome-shell
+    + lg: 调试工具
+  - 关机：状态菜单，按下Alt
+  - 更多设置：gnome-tweak-tool
+* 扩展
+  几个推荐
+   - Gnome 官方扩展
+     
+     http://live.gnome.org/GnomeShell/Extensions
+   - 系统监视器
+     
+     https://github.com/paradoxxxzero/gnome-shell-system-monitor-applet
+   - pidgin消息集成
+     
+     https://github.com/kagesenshi/gnome-shell-extensions-pidgin
+* 扩展：安装
+  - 查看扩展文档
+  - 直接复制
+    + 本地安装路径：~/.local/share/gnome-shell/extensions
+    + 系统安装路径：/usr/share/gnome-shell/extensions/
+  - 安装完毕需要重启 (Alt+F2 -> r)
+* 扩展：调试
+  - look glass：Alt+F2 -> lg
+  - 版本号问题：metadata.json -> shell-version
+* Q&A
+  - GNOME3 Official Website
+    
+    http://www.gnome3.org/
+  - GNOME Shell Design
+    
+    http://live.gnome.org/GnomeShell/Design/
+  - GNOME Shell Cheatsheet
+
+    http://live.gnome.org/GnomeShell/CheatSheet

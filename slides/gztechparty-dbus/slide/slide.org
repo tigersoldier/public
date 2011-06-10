@@ -339,6 +339,7 @@ class MprisPlayer(dbus.service.Object):
    - 使用dbus.service.signal修饰类的方法
    - 消息的参数就是方法的传入参数
    - 调用方法即触发信号
+
 #+BEGIN_SRC python
 class MprisPlayer(dbus.service.Object):
 #...
